@@ -1,7 +1,7 @@
 # Web-based VR Immersive Data Visualization
 This project is an immersive data visualization application using WebVR technology. It is built using d3.js, three.js, and React which allows users to explore and visualize data in a fully immersive virtual reality environment.
 
-### Live Link: 
+### Live Link: https://aramidefins.github.io/web-VR/
 
 ## Features
 - Customizable visualizations: This application allows developers to customize the visualizations using three.js library.
