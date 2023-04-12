@@ -16,5 +16,3 @@ This project is an immersive data visualization application using WebVR technolo
 ## Usage
 To use the application, you need a mobile device or a computer , you can open the application in your web browser and enter VR mode.
 Once you are in VR mode, you can interacact with the data visualizations and explore the data in a fully immersive environment, VR headset such as the Oculus Rift or HTC Vive can also be used to explore it in more immersive way.
-## Contributing
-If you would like to contribute to the project, feel free to fork the repository and submit a pull request. We welcome contributions from the community and are always looking for ways to improve the application.

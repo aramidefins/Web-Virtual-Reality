@@ -15,11 +15,12 @@ const PlaneGeometry = ({ position }) => {
 
   return (
     <mesh ref={planeRef} rotation-x={-0.5 * Math.PI} position={[0.2, 0, -1]}>
-      <planeGeometry color="gray" args={[19, 19, 1]} />
-      <meshStandardMaterial side={THREE.DoubleSide} />
+      <planeGeometry args={[19, 19, 1]} />
+      <meshStandardMaterial color="gray" side={THREE.DoubleSide} />
     </mesh>
   );
 };
+
 
 const MappedVariable = ({ data, zPos, color, scale }) => {
   const groupRef = useRef();
@@ -129,16 +130,16 @@ function AxisLabels({ data }) {
           );
         })}
       </group>
-      <group>
+      <group rotation={[0, 0, 0]}>
         {data.dates.map((label, index) => (
           <Text
             key={index}
             color="purple"
             fontSize={0.5}
-            position={[tick(label) - 8.5, 0.3, 10]}
+            position={[tick(label) - 8.5, 0.7, 10]}
             anchorX="left"
             anchorY="left"
-            rotation={[Math.PI * -0.5, Math.PI * -0.5, Math.PI * 200]}
+            rotation={[Math.PI * -0.05, Math.PI * -0.5, Math.PI * 200]}
           >
             {label}
             <meshNormalMaterial />
