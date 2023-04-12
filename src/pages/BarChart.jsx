@@ -1,20 +1,21 @@
-import React, { useRef, useState, useEffect, useMemo, Suspense } from "react";
-import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import React, { useRef, useState, useEffect} from "react";
+import { Canvas } from "@react-three/fiber";
+import { VRButton, ARButton, XR, Controllers, Hands } from "@react-three/xr";
 import { OrbitControls, Text, Line } from "@react-three/drei";
 import * as THREE from "three";
-import { useSpring, animated, config } from "@react-spring/three";
+import {  animated } from "@react-spring/three";
 import * as d3 from "d3";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { TextureLoader } from "three";
+
 
 const PlaneGeometry = ({ position }) => {
   const planeRef = useRef();
 
   return (
     <mesh ref={planeRef} rotation-x={-0.5 * Math.PI} position={[0.2, 0, -1]}>
-      <planeGeometry color="red" args={[19, 19, 1]} />
+      <planeGeometry color="gray" args={[19, 19, 1]} />
       <meshStandardMaterial side={THREE.DoubleSide} />
     </mesh>
   );
@@ -62,7 +63,7 @@ const MappedVariable = ({ data, zPos, color, scale }) => {
           position={[i * 1.2 - 8, yBase * dataSCale(d), zPos]}
           scale={[0.25, 1, 0.25]}
         >
-          <boxGeometry args={[2, dataSCale(d / 2), 2.5]} />
+          <boxGeometry args={[2.5, dataSCale(d / 2), 2.5]} />
           <animated.meshStandardMaterial
             color={color}
             opacity={activeList[i] ? 0.6 : 1}
@@ -128,16 +129,16 @@ function AxisLabels({ data }) {
           );
         })}
       </group>
-      <group >
+      <group>
         {data.dates.map((label, index) => (
           <Text
             key={index}
             color="purple"
             fontSize={0.5}
             position={[tick(label) - 8.5, 0.3, 10]}
-            anchorX="center"
-            anchorY="middle"
-            rotation={[Math.PI * -0.05, Math.PI * -0.5, Math.PI / 200]}
+            anchorX="left"
+            anchorY="left"
+            rotation={[Math.PI * -0.5, Math.PI * -0.5, Math.PI * 200]}
           >
             {label}
             <meshNormalMaterial />
@@ -197,42 +198,6 @@ function AxisLabels({ data }) {
   );
 }
 
-const XAxis = ({ ticks, tickPositions, tickLabels, labelPosition }) => {
-  const mesh = useRef();
-
-  return (
-    <group ref={mesh}>
-      {ticks.map((tick, i) => (
-        <line
-          key={tick}
-          position={[tickPositions[i][0], tickPositions[i][1], 0]}
-          points={[new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -0.5)]}
-        />
-      ))}
-      {tickLabels.map((label, i) => (
-        <Text
-          key={i}
-          color={"red"}
-          anchorX="center"
-          anchorY="top"
-          fontSize={0.4}
-          position={[tickPositions[i][0], tickPositions[i][1] - 0.6, 0]}
-        >
-          {label}
-        </Text>
-      ))}
-      <Text
-        color={"red"}
-        anchorX="center"
-        anchorY="top"
-        fontSize={0.4}
-        position={[labelPosition[0], labelPosition[1], labelPosition[2]]}
-      >
-        X-Axis Label
-      </Text>
-    </group>
-  );
-};
 
 const Legend = ({ xPos }) => {
   return (
@@ -529,70 +494,75 @@ function BarChart() {
   return (
     <>
       <ToastContainer />
-      {
-        loading ? <h1>Loading data ...</h1> :
+      {loading ? (
+        <h1>Loading data ...</h1>
+      ) : (
         <Canvas
-        style={{
-          width: "94vw",
-          height: "100vh",
-          background: `url(https://cdn.aframe.io/a-painter/images/sky.jpg)`,
-        }}
-        camera={{ position: [0, 0, 40] }}
-      >
-        <OrbitControls ref={controlsRef} />
-        <axesHelper
-          args={[11, 20]}
-          scale={[1.7, 3, 1]}
-          position={[-8.5, 0, -3.5]}
-        />
-        <axesHelper
-          args={[11, 20]}
-          scale={[0, 3, 0]}
-          position={[9.7, 0, -3.5]}
-        />
-        <axesHelper
-          args={[11, 20]}
-          scale={[0, 3, 0]}
-          position={[9.7, 0, 7.3]}
-        />
-        <gridHelper args={[19, 14]} position={[0.2, 0, -1]} />
-        <AxisLabels data={GoogleData} />
-        <ambientLight intensity={0.1} />
-        <directionalLight color="gold" position={[0, 0, 5]} />
-        <PlaneGeometry />
-        <Legend xPos={13} />
-        <MappedVariable
-          data={AppleData}
-          zPos={6.5}
-          color={"green"}
-          scale={GoogleData}
-        />
-        <MappedVariable
-          data={MicrosoftData}
-          zPos={4.5}
-          color={"red"}
-          scale={GoogleData}
-        />
-        <MappedVariable
-          data={TwitterData}
-          zPos={2.5}
-          color={"orange"}
-          scale={GoogleData}
-        />
-        <MappedVariable
-          data={TeslaData}
-          zPos={0.5}
-          color={"magenta"}
-          scale={GoogleData}
-        />
-        <MappedVariable
-          data={GoogleData}
-          zPos={-2.5}
-          color={"blue"}
-          scale={GoogleData}
-        />
-      </Canvas>
-      }
+          style={{
+            width: "94vw",
+            height: "100vh",
+            background: `url(https://cdn.aframe.io/a-painter/images/sky.jpg)`,
+          }}
+          camera={{ position: [0, 0, 40] }}
+        >
+          <XR>
+            <Controllers />
+            <Hands />
+            <OrbitControls ref={controlsRef} />
+            <axesHelper
+              args={[11, 20]}
+              scale={[1.7, 3, 1]}
+              position={[-8.5, 0, -3.5]}
+            />
+            <axesHelper
+              args={[11, 20]}
+              scale={[0, 3, 0]}
+              position={[9.7, 0, -3.5]}
+            />
+            <axesHelper
+              args={[11, 20]}
+              scale={[0, 3, 0]}
+              position={[9.7, 0, 7.3]}
+            />
+            <gridHelper args={[19, 14]} position={[0.2, 0, -1]} />
+            <AxisLabels data={GoogleData} />
+            <ambientLight intensity={0.4} />
+            <directionalLight color="white" position={[1, 100, 5]} />
+            <PlaneGeometry />
+            <Legend xPos={13} />
+            <MappedVariable
+              data={AppleData}
+              zPos={6.5}
+              color={"green"}
+              scale={GoogleData}
+            />
+            <MappedVariable
+              data={MicrosoftData}
+              zPos={4.5}
+              color={"red"}
+              scale={GoogleData}
+            />
+            <MappedVariable
+              data={TwitterData}
+              zPos={2.5}
+              color={"orange"}
+              scale={GoogleData}
+            />
+            <MappedVariable
+              data={TeslaData}
+              zPos={0.5}
+              color={"magenta"}
+              scale={GoogleData}
+            />
+            <MappedVariable
+              data={GoogleData}
+              zPos={-2.5}
+              color={"blue"}
+              scale={GoogleData}
+            />
+          </XR>
+        </Canvas>
+      )}
     </>
   );
 }
